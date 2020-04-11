@@ -1,14 +1,24 @@
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
 // import "core-js/fn/array.find"
-import sample from "lodash-es/sample";
-import { Hans } from "./data/zh";
+import { sample } from "lodash";
+import { similarChar } from "./data/zh";
 
-export default (text: string, seed = 0.3): string => {
-  return Array.from(text).map(v => {
+export default function (text: string, seed = 0.1) {
+  let result = []
+  const charArray = Array.from(text)
+  for (const char of charArray) {
     if (Math.random() <= seed) {
-      return Hans[v] ? sample(Hans[v]) : v;
+      let temp
+      for (const charGroup of similarChar) {
+        if (charGroup.includes(char)) {
+          temp = sample(charGroup.filter(v => v !== char))
+          break;
+        }
+      }
+      result.push(temp || char)
     } else {
-      return v;
+      result.push(char)
     }
-  }).join("");
+  }
+  return result.join("")
 }
